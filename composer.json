@@ -1,0 +1,28 @@
+{
+    "name": "vivlong/phalapi-xoss",
+    "description": "PhalApi 2.x 扩展类库：支持Qiniu、Aliyun的OSS扩展",
+    "type": "library",
+    "keywords": [
+        "phalapi", "phalapi-xoss", "oss"
+    ],
+    "license": "GPL-3.0+",
+    "minimum-stability": "dev",
+    "homepage": "https://www.phalapi.net/",
+    "authors": [
+        {
+            "name": "vivlong",
+            "email": "vivlonglz@gmail.com",
+            "homepage": "http://vivlong.github.io",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "aliyuncs/oss-sdk-php": "dev-master",
+        "qiniu/php-sdk": "9999999-dev"
+    },
+    "autoload": {
+        "psr-4": {
+            "PhalApi\\Xoss\\": "src"
+        }
+    }
+}
