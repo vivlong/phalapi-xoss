@@ -45,12 +45,3 @@ $di->xOss = function() {
   \PhalApi\DI()->xOss->uploadFile($bucket, $object, $filePath);
 ```
 
-第二种使用方式：或者，直接使用已经提供的默认上传接口。在composer.json中追加配置：
-```
-"autoload": {
-    "psr-4": {
-        "Xoss\\": "vendor/phalapi/Xoss/src/oss"
-    }
-}
-```  
-

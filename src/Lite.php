@@ -29,8 +29,8 @@ class Lite
     {
         if (method_exists($this, $method)) {
             return call_user_func_array(array(&$this, $method), $arguments);
-        } elseif (!empty($this->translater) && $this->translater && method_exists($this->translater, $method)) {
-            return call_user_func_array(array(&$this->translater, $method), $arguments);
+        } elseif (!empty($this->oss) && $this->oss && method_exists($this->oss, $method)) {
+            return call_user_func_array(array(&$this->oss, $method), $arguments);
         }
     }
 
@@ -52,8 +52,8 @@ class Lite
         }
         $this->config = array_merge($this->config, $config);
         $engine = '\\PhalApi\\Xoss\\Engine\\'.ucfirst(strtolower($this->engine));
-        $this->translater = new $engine($this->config);
-        if (!$this->translater) {
+        $this->oss = new $engine($this->config);
+        if (!$this->oss) {
             $di->logger->log('Xoss', 'No engine class', $engine);
             return false;
         }

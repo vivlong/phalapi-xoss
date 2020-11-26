@@ -16,7 +16,7 @@ return array(
         ),
         'qiniu' =>  array(
             'accessKey'   => '<yourAccessKey>',
-            'secretKey'   => '<yourAccessSecretKey >',
+            'secretKey'   => '<yourAccessSecretKey>',
         ),
     ),
 );
