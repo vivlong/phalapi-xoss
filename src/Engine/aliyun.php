@@ -49,12 +49,12 @@ class Aliyun
     {
         $di = \PhalApi\DI();
         if (!file_exists($filePath)) {
-            $di->logger->error('AliyunOss # uploadFile # file not exists', $filePath);
+            $di->logger->error('Xoss.aliyun # uploadFile # file not exists', $filePath);
 
             return false;
         }
         if (!$this->client->doesBucketExist($bucket)) {
-            $di->logger->error('AliyunOss # uploadFile # Bucket not exists', $bucket);
+            $di->logger->error('Xoss.aliyun # uploadFile # Bucket not exists', $bucket);
 
             return false;
         }
@@ -63,7 +63,7 @@ class Aliyun
 
             return $res;
         } catch (OssException $e) {
-            $di->logger->error('AliyunOss # uploadFile', $e->getMessage());
+            $di->logger->error('Xoss.aliyun # uploadFile', $e->getMessage());
 
             return false;
         }
@@ -73,12 +73,12 @@ class Aliyun
     {
         $di = \PhalApi\DI();
         if (!file_exists($filePath)) {
-            $di->logger->error('AliyunOss # multiuploadFile # file not exists', $filePath);
+            $di->logger->error('Xoss.aliyun # multiuploadFile # file not exists', $filePath);
 
             return false;
         }
         if (!$this->client->doesBucketExist($bucket)) {
-            $di->logger->error('AliyunOss # multiuploadFile # Bucket not exists', $bucket);
+            $di->logger->error('Xoss.aliyun # multiuploadFile # Bucket not exists', $bucket);
 
             return false;
         }
@@ -93,7 +93,7 @@ class Aliyun
 
             return $res;
         } catch (OssException $e) {
-            $di->logger->error('AliyunOss # multiuploadFile', $e->getMessage());
+            $di->logger->error('Xoss.aliyun # multiuploadFile', $e->getMessage());
 
             return false;
         }
@@ -103,12 +103,12 @@ class Aliyun
     {
         $di = \PhalApi\DI();
         if (!$this->client->doesBucketExist($fromBucket)) {
-            $di->logger->error('AliyunOss # copyObject # Bucket not exists', $fromBucket);
+            $di->logger->error('Xoss.aliyun # copyObject # Bucket not exists', $fromBucket);
 
             return false;
         }
         if (!$this->client->doesObjectExist($fromBucket, $fromObject)) {
-            $di->logger->error('AliyunOss # copyObject # file not exists', $fromObject);
+            $di->logger->error('Xoss.aliyun # copyObject # file not exists', $fromObject);
 
             return false;
         }
@@ -116,7 +116,7 @@ class Aliyun
             $toBucket = $fromBucket;
         } else {
             if (!$this->client->doesBucketExist($toBucket)) {
-                $di->logger->error('AliyunOss # copyObject # dst Bucket not exists', $toBucket);
+                $di->logger->error('Xoss.aliyun # copyObject # dst Bucket not exists', $toBucket);
 
                 return false;
             }
@@ -126,7 +126,7 @@ class Aliyun
 
             return $res;
         } catch (OssException $e) {
-            $di->logger->error('AliyunOss # copyObject', $e->getMessage());
+            $di->logger->error('Xoss.aliyun # copyObject', $e->getMessage());
 
             return false;
         }
@@ -136,12 +136,12 @@ class Aliyun
     {
         $di = \PhalApi\DI();
         if (!$this->client->doesBucketExist($fromBucket)) {
-            $di->logger->error('AliyunOss # uploadPartCopy # Bucket not exists', $fromBucket);
+            $di->logger->error('Xoss.aliyun # uploadPartCopy # Bucket not exists', $fromBucket);
 
             return false;
         }
         if (!$this->client->doesObjectExist($fromBucket, $fromObject)) {
-            $di->logger->error('AliyunOss # uploadPartCopy # file not exists', $fromObject);
+            $di->logger->error('Xoss.aliyun # uploadPartCopy # file not exists', $fromObject);
 
             return false;
         }
@@ -149,7 +149,7 @@ class Aliyun
             $toBucket = $fromBucket;
         } else {
             if (!$this->client->doesBucketExist($toBucket)) {
-                $di->logger->error('AliyunOss # uploadPartCopy # dst Bucket not exists', $toBucket);
+                $di->logger->error('Xoss.aliyun # uploadPartCopy # dst Bucket not exists', $toBucket);
 
                 return false;
             }
@@ -169,7 +169,7 @@ class Aliyun
 
             return $result;
         } catch (OssException $e) {
-            $di->logger->error('AliyunOss # uploadPartCopy', $e->getMessage());
+            $di->logger->error('Xoss.aliyun # uploadPartCopy', $e->getMessage());
 
             return false;
         }
@@ -179,12 +179,12 @@ class Aliyun
     {
         $di = \PhalApi\DI();
         if (!file_exists($filePath)) {
-            $di->logger->error('AliyunOss # uploadPart # file not exists', $filePath);
+            $di->logger->error('Xoss.aliyun # uploadPart # file not exists', $filePath);
 
             return false;
         }
         if (!$this->client->doesBucketExist($bucket)) {
-            $di->logger->error('AliyunOss # uploadPart # Bucket not exists', $bucket);
+            $di->logger->error('Xoss.aliyun # uploadPart # Bucket not exists', $bucket);
 
             return false;
         }
@@ -194,7 +194,7 @@ class Aliyun
              */
             $uploadId = $this->client->initiateMultipartUpload($bucket, $object);
         } catch (OssException $e) {
-            $di->logger->error('AliyunOss # uploadPart # initiateMultipartUpload FAILED', $e->getMessage());
+            $di->logger->error('Xoss.aliyun # uploadPart # initiateMultipartUpload FAILED', $e->getMessage());
 
             return false;
         }
@@ -226,7 +226,7 @@ class Aliyun
             try {
                 $responseUploadPart[] = $this->client->uploadPart($bucket, $object, $uploadId, $upOptions);
             } catch (OssException $e) {
-                $di->logger->error("AliyunOss # uploadPart # part#{$i} FAILED", $e->getMessage());
+                $di->logger->error("Xoss.aliyun # uploadPart # part#{$i} FAILED", $e->getMessage());
 
                 return;
             }
@@ -248,7 +248,7 @@ class Aliyun
 
             return $result;
         } catch (OssException $e) {
-            $di->logger->error('AliyunOss # uploadPart # completeMultipartUpload FAILED', $e->getMessage());
+            $di->logger->error('Xoss.aliyun # uploadPart # completeMultipartUpload FAILED', $e->getMessage());
 
             return false;
         }
@@ -258,12 +258,12 @@ class Aliyun
     {
         $di = \PhalApi\DI();
         if (empty($content)) {
-            $di->logger->error('AliyunOss # putObject # content is empty');
+            $di->logger->error('Xoss.aliyun # putObject # content is empty');
 
             return false;
         }
         if (!$this->client->doesBucketExist($bucket)) {
-            $di->logger->error('AliyunOss # putObject # Bucket not exists', $bucket);
+            $di->logger->error('Xoss.aliyun # putObject # Bucket not exists', $bucket);
 
             return false;
         }
@@ -272,7 +272,7 @@ class Aliyun
 
             return $res;
         } catch (OssException $e) {
-            $di->logger->error('AliyunOss # putObject', $e->getMessage());
+            $di->logger->error('Xoss.aliyun # putObject', $e->getMessage());
 
             return false;
         }
@@ -282,7 +282,7 @@ class Aliyun
     {
         $di = \PhalApi\DI();
         if (!$this->client->doesBucketExist($bucket)) {
-            $di->logger->error('AliyunOss # listObjects # Bucket not exists', $bucket);
+            $di->logger->error('Xoss.aliyun # listObjects # Bucket not exists', $bucket);
 
             return false;
         }
@@ -314,7 +314,7 @@ class Aliyun
                 'directory' => $prefixs,
             ];
         } catch (OssException $e) {
-            $di->logger->error('AliyunOss # listObjects', $e->getMessage());
+            $di->logger->error('Xoss.aliyun # listObjects', $e->getMessage());
 
             return false;
         }
@@ -324,12 +324,12 @@ class Aliyun
     {
         $di = \PhalApi\DI();
         if (!$this->client->doesBucketExist($bucket)) {
-            $di->logger->error('AliyunOss # deleteObject # Bucket not exists', $bucket);
+            $di->logger->error('Xoss.aliyun # deleteObject # Bucket not exists', $bucket);
 
             return false;
         }
         if (!$this->client->doesObjectExist($bucket, $object)) {
-            $di->logger->error('AliyunOss # deleteObject # file not exists', $object);
+            $di->logger->error('Xoss.aliyun # deleteObject # file not exists', $object);
 
             return true;
         }
@@ -338,7 +338,7 @@ class Aliyun
 
             return $res;
         } catch (OssException $e) {
-            $di->logger->error('AliyunOss # deleteObject', $e->getMessage());
+            $di->logger->error('Xoss.aliyun # deleteObject', $e->getMessage());
 
             return false;
         }
@@ -352,7 +352,7 @@ class Aliyun
 
             return $res;
         } catch (OssException $e) {
-            $di->logger->error('AliyunOss # deleteObjects', $e->getMessage());
+            $di->logger->error('Xoss.aliyun # deleteObjects', $e->getMessage());
 
             return false;
         }
