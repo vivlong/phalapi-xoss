@@ -1,22 +1,22 @@
 <?php
 
-return array(
-    /**
+return [
+    /*
      * 相关配置
      */
-    'Xoss' => array(
-        'aliyun' => array(
-            'accessKeyId'       => '<yourAccessKeyId>',
-            'accessKeySecret'   => '<yourAccessKeySecret>',
-            'bucket'            => '<yourBucketName>',
-            'endpoint'          => 'http://oss-cn-hangzhou.aliyuncs.com',
-            'isCName'           => false,
-            'securityToken'     => null,
-            'requestProxy'      => null,
-        ),
-        'qiniu' =>  array(
-            'accessKey'   => '<yourAccessKey>',
-            'secretKey'   => '<yourAccessSecretKey>',
-        ),
-    ),
-);
+    'Xoss' => [
+        'aliyun' => [
+            'accessKeyId' => '<yourAccessKeyId>',
+            'accessKeySecret' => '<yourAccessKeySecret>',
+            'bucket' => '<yourBucketName>',
+            'endpoint' => 'http://oss-cn-hangzhou.aliyuncs.com',
+            'isCName' => false,
+            'securityToken' => null,
+            'requestProxy' => null,
+        ],
+        'qiniu' => [
+            'accessKey' => '<yourAccessKey>',
+            'secretKey' => '<yourAccessSecretKey>',
+        ],
+    ],
+];

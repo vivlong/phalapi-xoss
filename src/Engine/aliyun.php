@@ -2,8 +2,8 @@
 
 namespace PhalApi\Xoss\Engine;
 
-use OSS\OssClient;
 use OSS\Core\OssException;
+use OSS\OssClient;
 
 class Aliyun
 {
@@ -83,10 +83,10 @@ class Aliyun
             return false;
         }
         if (empty($options)) {
-            $options = array(
+            $options = [
                 OssClient::OSS_CHECK_MD5 => true,
                 OssClient::OSS_PART_SIZE => 1,
-            );
+            ];
         }
         try {
             $res = $this->client->multiuploadFile($bucket, $object, $filePath, $options);
@@ -160,10 +160,10 @@ class Aliyun
             $copyId = 1;
             // 逐个分片拷贝
             $eTag = $this->client->uploadPartCopy($fromBucket, $fromObject, $toBucket, $toObject, $copyId, $uploadId);
-            $upload_parts[] = array(
+            $upload_parts[] = [
                 'PartNumber' => $copyId,
                 'ETag' => $eTag,
-            );
+            ];
             // 完成分片拷贝
             $result = $this->client->completeMultipartUpload($toBucket, $toObject, $uploadId, $upload_parts);
 
@@ -204,19 +204,19 @@ class Aliyun
         $partSize = 10 * 1024 * 1024;
         $uploadFileSize = filesize($filePath);
         $pieces = $this->client->generateMultiuploadParts($uploadFileSize, $partSize);
-        $responseUploadPart = array();
+        $responseUploadPart = [];
         $uploadPosition = 0;
         $isCheckMd5 = true;
         foreach ($pieces as $i => $piece) {
             $fromPos = $uploadPosition + (int) $piece[OssClient::OSS_SEEK_TO];
             $toPos = (int) $piece[OssClient::OSS_LENGTH] + $fromPos - 1;
-            $upOptions = array(
+            $upOptions = [
                 OssClient::OSS_FILE_UPLOAD => $filePath,
                 OssClient::OSS_PART_NUM => ($i + 1),
                 OssClient::OSS_SEEK_TO => $fromPos,
                 OssClient::OSS_LENGTH => $toPos - $fromPos + 1,
                 OssClient::OSS_CHECK_MD5 => $isCheckMd5,
-            );
+            ];
             // MD5校验
             if ($isCheckMd5) {
                 $contentMd5 = OssUtil::getMd5SumForFile($filePath, $fromPos, $toPos);
@@ -232,12 +232,12 @@ class Aliyun
             }
         }
         // $uploadParts是由每个分片的ETag和分片号（PartNumber）组成的数组。
-        $uploadParts = array();
+        $uploadParts = [];
         foreach ($responseUploadPart as $i => $eTag) {
-            $uploadParts[] = array(
+            $uploadParts[] = [
                 'PartNumber' => ($i + 1),
                 'ETag' => $eTag,
-            );
+            ];
         }
         /*
          * 步骤3：完成上传。
@@ -286,18 +286,18 @@ class Aliyun
 
             return false;
         }
-        $options = array(
+        $options = [
             'delimiter' => $delimiter,
             'prefix' => $prefix,
             'max-keys' => $maxkeys,
             'marker' => $nextMarker,
-        );
+        ];
         try {
             $listObjectInfo = $this->client->listObjects($bucket, $options);
             $objectList = $listObjectInfo->getObjectList();
             $prefixList = $listObjectInfo->getPrefixList();
-            $objects = array();
-            $prefixs = array();
+            $objects = [];
+            $prefixs = [];
             if (!empty($objectList)) {
                 foreach ($objectList as $objectInfo) {
                     array_push($objects, $objectInfo->getKey());
@@ -309,10 +309,10 @@ class Aliyun
                 }
             }
 
-            return array(
+            return [
                 'object' => $objects,
                 'directory' => $prefixs,
-            );
+            ];
         } catch (OssException $e) {
             $di->logger->error('AliyunOss # listObjects', $e->getMessage());
 

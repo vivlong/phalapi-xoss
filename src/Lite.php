@@ -9,7 +9,7 @@ class Lite
      *
      * @var object
      */
-    private $oss;
+    private $client;
 
     /**
      * 配置参数.
@@ -28,9 +28,9 @@ class Lite
     public function __call($method, $arguments)
     {
         if (method_exists($this, $method)) {
-            return call_user_func_array(array(&$this, $method), $arguments);
-        } elseif (!empty($this->oss) && $this->oss && method_exists($this->oss, $method)) {
-            return call_user_func_array(array(&$this->oss, $method), $arguments);
+            return call_user_func_array([&$this, $method], $arguments);
+        } elseif (!empty($this->client) && $this->client && method_exists($this->client, $method)) {
+            return call_user_func_array([&$this->client, $method], $arguments);
         }
     }
 
@@ -44,19 +44,22 @@ class Lite
     {
         $di = \PhalApi\DI();
         $this->engine = strtolower($engine);
-        $this->config = array();
+        $this->config = [];
         $config = $di->config->get('app.Xoss.'.$this->engine);
         if (!$config) {
             $di->logger->log('Xoss', 'No engine config', $this->engine);
+
             return false;
         }
         $this->config = array_merge($this->config, $config);
         $engine = '\\PhalApi\\Xoss\\Engine\\'.ucfirst(strtolower($this->engine));
-        $this->oss = new $engine($this->config);
-        if (!$this->oss) {
+        $this->client = new $engine($this->config);
+        if (!$this->client) {
             $di->logger->log('Xoss', 'No engine class', $engine);
+
             return false;
         }
+
         return true;
     }
 }
