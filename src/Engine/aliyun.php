@@ -31,7 +31,7 @@ class Aliyun
             $ossClient->setConnectTimeout(10); // 设置建立连接的超时时间，单位秒，默认10秒。
             $this->client = $ossClient;
         } catch (OssException $e) {
-            $di->logger->error($e->getMessage());
+            $di->logger->error('Xoss.aliyun # OssException', $e->getMessage());
         }
     }
 

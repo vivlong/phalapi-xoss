@@ -26,7 +26,7 @@ class Qiniu
             $auth = new Auth($accessKey, $secretKey);
             $this->auth = $auth;
         } catch (Exception $e) {
-            $di->logger->error($e->getMessage());
+            $di->logger->error('Xoss.qiniu # Auth Exception', $e->getMessage());
         }
     }
 
