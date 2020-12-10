@@ -26,7 +26,7 @@ class Qiniu
             $auth = new Auth($accessKey, $secretKey);
             $this->auth = $auth;
         } catch (Exception $e) {
-            $di->logger->error('Xoss.qiniu # Auth Exception', $e->getMessage());
+            $di->logger->error('Xoss.qiniu', 'Auth', ['Exception' => $e->getMessage()]);
         }
     }
 
@@ -78,12 +78,12 @@ class Qiniu
     {
         $di = \PhalApi\DI();
         if (!file_exists($filePath)) {
-            $di->logger->error('Xoss.qiniu # uploadFile # file not exists', $filePath);
+            $di->logger->info('Xoss.qiniu', 'uploadFile', ['file not exists' => $filePath]);
 
             return false;
         }
         if (!$this->doesBucketExist($bucket)) {
-            $di->logger->error('Xoss.qiniu # uploadFile # Bucket not exists', $bucket);
+            $di->logger->info('Xoss.qiniu', 'uploadFile', ['Bucket not exists' => $bucket]);
 
             return false;
         }
@@ -94,12 +94,12 @@ class Qiniu
             $uploadMgr = new UploadManager();
             list($ret, $err) = $uploadMgr->putFile($token, $object, $filePath);
             if (null != $err) {
-                $di->logger->error('Xoss.qiniu # uploadFile # error', $err);
+                $di->logger->error('Xoss.qiniu', 'uploadFile', ['Error' => $err]);
             } else {
                 return $ret;
             }
         } catch (Exception $e) {
-            $di->logger->error('Xoss.qiniu # uploadFile', $e->getMessage());
+            $di->logger->error('Xoss.qiniu', 'uploadFile', ['Exception' => $e->getMessage()]);
 
             return false;
         }
@@ -113,7 +113,7 @@ class Qiniu
         try {
             list($ret, $err) = $bucketManager->listFiles($bucket, $prefix, $marker, $limit, $delimiter);
             if (null !== $err) {
-                $di->logger->error('Xoss.qiniu # getFileList # error', $err);
+                $di->logger->error('Xoss.qiniu', 'getFileList', ['Error' => $err]);
             } else {
                 return [
                     'object' => $ret['items'],
@@ -121,7 +121,7 @@ class Qiniu
                 ];
             }
         } catch (Exception $e) {
-            $di->logger->error('Xoss.qiniu # getFileList', $e->getMessage());
+            $di->logger->error('Xoss.qiniu', 'getFileList', ['Exception' => $e->getMessage()]);
 
             return false;
         }
@@ -131,7 +131,7 @@ class Qiniu
     {
         $di = \PhalApi\DI();
         if (!$this->doesObjectExist($bucket, $object)) {
-            $di->logger->error('Xoss.qiniu # deleteObject # Bucket or file not exists', $object);
+            $di->logger->info('Xoss.qiniu', 'deleteObject', ['Bucket or file not exists' => $object]);
 
             return true;
         }
@@ -139,7 +139,7 @@ class Qiniu
         $bucketManager = new BucketManager($this->auth, $config);
         list($ret, $err) = $bucketManager->delete($bucket, $object);
         if (null !== $err) {
-            $di->logger->error('Xoss.qiniu # deleteObject', $err);
+            $di->logger->error('Xoss.qiniu', 'deleteObject', ['Error' => $err]);
 
             return false;
         }
