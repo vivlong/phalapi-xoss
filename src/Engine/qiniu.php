@@ -26,7 +26,7 @@ class Qiniu
             $auth = new Auth($accessKey, $secretKey);
             $this->auth = $auth;
         } catch (Exception $e) {
-            $di->logger->error('Xoss.qiniu', 'Auth', ['Exception' => $e->getMessage()]);
+            $di->logger->error(__NAMESPACE__.DIRECTORY_SEPARATOR.__CLASS__.DIRECTORY_SEPARATOR.__FUNCTION__, ['Exception' => $e->getMessage()]);
         }
     }
 
@@ -69,37 +69,39 @@ class Qiniu
         list($ret, $err) = $bucketManager->stat($bucket, $object);
         if (null != $err) {
             return false;
-        } else {
-            return true;
         }
+
+        return true;
     }
 
-    public function uploadFile($bucket, $object, $filePath, $options = null)
+    public function uploadFile($bucket, $object, $filePath, $policy = null)
     {
         $di = \PhalApi\DI();
+        if (empty($object)) {
+            return false;
+        }
         if (!file_exists($filePath)) {
-            $di->logger->info('Xoss.qiniu', 'uploadFile', ['file not exists' => $filePath]);
+            $di->logger->info(__NAMESPACE__.DIRECTORY_SEPARATOR.__CLASS__.DIRECTORY_SEPARATOR.__FUNCTION__, ['file not exists' => $filePath]);
 
             return false;
         }
         if (!$this->doesBucketExist($bucket)) {
-            $di->logger->info('Xoss.qiniu', 'uploadFile', ['Bucket not exists' => $bucket]);
+            $di->logger->info(__NAMESPACE__.DIRECTORY_SEPARATOR.__CLASS__.DIRECTORY_SEPARATOR.__FUNCTION__, ['Bucket not exists' => $bucket]);
 
             return false;
         }
         try {
             $expires = 3600;
-            $policy = null;
             $token = $this->auth->uploadToken($bucket, null, $expires, $policy, true);
             $uploadMgr = new UploadManager();
             list($ret, $err) = $uploadMgr->putFile($token, $object, $filePath);
             if (null != $err) {
-                $di->logger->error('Xoss.qiniu', 'uploadFile', ['Error' => $err]);
+                $di->logger->error(__NAMESPACE__.DIRECTORY_SEPARATOR.__CLASS__.DIRECTORY_SEPARATOR.__FUNCTION__, ['Error' => $err]);
             } else {
                 return $ret;
             }
         } catch (Exception $e) {
-            $di->logger->error('Xoss.qiniu', 'uploadFile', ['Exception' => $e->getMessage()]);
+            $di->logger->error(__NAMESPACE__.DIRECTORY_SEPARATOR.__CLASS__.DIRECTORY_SEPARATOR.__FUNCTION__, ['Exception' => $e->getMessage()]);
 
             return false;
         }
@@ -108,12 +110,20 @@ class Qiniu
     public function listObjects($bucket, $prefix = '', $delimiter = '/', $limit = 100, $marker = '')
     {
         $di = \PhalApi\DI();
+        if (empty($bucket)) {
+            return false;
+        }
+        if (!$this->doesBucketExist($bucket)) {
+            $di->logger->info(__NAMESPACE__.DIRECTORY_SEPARATOR.__CLASS__.DIRECTORY_SEPARATOR.__FUNCTION__, ['Bucket not exists' => $bucket]);
+
+            return false;
+        }
         $config = new Config();
         $bucketManager = new BucketManager($this->auth, $config);
         try {
             list($ret, $err) = $bucketManager->listFiles($bucket, $prefix, $marker, $limit, $delimiter);
             if (null !== $err) {
-                $di->logger->error('Xoss.qiniu', 'getFileList', ['Error' => $err]);
+                $di->logger->error(__NAMESPACE__.DIRECTORY_SEPARATOR.__CLASS__.DIRECTORY_SEPARATOR.__FUNCTION__, ['Error' => $err]);
             } else {
                 return [
                     'object' => $ret['items'],
@@ -121,7 +131,7 @@ class Qiniu
                 ];
             }
         } catch (Exception $e) {
-            $di->logger->error('Xoss.qiniu', 'getFileList', ['Exception' => $e->getMessage()]);
+            $di->logger->error(__NAMESPACE__.DIRECTORY_SEPARATOR.__CLASS__.DIRECTORY_SEPARATOR.__FUNCTION__, ['Exception' => $e->getMessage()]);
 
             return false;
         }
@@ -131,19 +141,125 @@ class Qiniu
     {
         $di = \PhalApi\DI();
         if (!$this->doesObjectExist($bucket, $object)) {
-            $di->logger->info('Xoss.qiniu', 'deleteObject', ['Bucket or file not exists' => $object]);
+            $di->logger->info(__NAMESPACE__.DIRECTORY_SEPARATOR.__CLASS__.DIRECTORY_SEPARATOR.__FUNCTION__, ['Bucket or file not exists' => $object]);
 
-            return true;
+            return false;
         }
         $config = new Config();
         $bucketManager = new BucketManager($this->auth, $config);
         list($ret, $err) = $bucketManager->delete($bucket, $object);
         if (null !== $err) {
-            $di->logger->error('Xoss.qiniu', 'deleteObject', ['Error' => $err]);
+            $di->logger->error(__NAMESPACE__.DIRECTORY_SEPARATOR.__CLASS__.DIRECTORY_SEPARATOR.__FUNCTION__, ['Error' => $err]);
 
             return false;
         }
 
         return true;
+    }
+
+    public function privateDownload($baseUrl)
+    {
+        $di = \PhalApi\DI();
+        $signedUrl = $this->auth->privateDownloadUrl($baseUrl);
+
+        return $signedUrl;
+    }
+
+    public function getStat($bucket, $object)
+    {
+        $di = \PhalApi\DI();
+        if (empty($bucket) || empty($object)) {
+            return false;
+        }
+        $config = new Config();
+        $bucketManager = new BucketManager($this->auth, $config);
+        list($ret, $err) = $bucketManager->stat($bucket, $object);
+        if (null != $err) {
+            $di->logger->error(__NAMESPACE__.DIRECTORY_SEPARATOR.__CLASS__.DIRECTORY_SEPARATOR.__FUNCTION__, ['Error' => $err]);
+
+            return false;
+        }
+
+        return $ret;
+    }
+
+    public function changeMime($bucket, $object, $mime)
+    {
+        $di = \PhalApi\DI();
+        if (!$this->doesObjectExist($bucket, $object)) {
+            $di->logger->info(__NAMESPACE__.DIRECTORY_SEPARATOR.__CLASS__.DIRECTORY_SEPARATOR.__FUNCTION__, ['Bucket or file not exists' => $object]);
+
+            return false;
+        }
+        $config = new Config();
+        $bucketManager = new BucketManager($this->auth, $config);
+        list($ret, $err) = $bucketManager->changeMime($bucket, $object, $mime);
+        if (null != $err) {
+            $di->logger->error(__NAMESPACE__.DIRECTORY_SEPARATOR.__CLASS__.DIRECTORY_SEPARATOR.__FUNCTION__, ['Error' => $err]);
+
+            return false;
+        }
+
+        return true;
+    }
+
+    public function move($srcBucket, $srcKey, $destBucket, $destKey)
+    {
+        $di = \PhalApi\DI();
+        if (!$this->doesObjectExist($srcBucket, $srcKey)) {
+            $di->logger->info(__NAMESPACE__.DIRECTORY_SEPARATOR.__CLASS__.DIRECTORY_SEPARATOR.__FUNCTION__, ['Bucket or file not exists' => $srcKey]);
+
+            return false;
+        }
+        $config = new Config();
+        $bucketManager = new BucketManager($this->auth, $config);
+        list($ret, $err) = $bucketManager->move($srcBucket, $srcKey, $destBucket, $destKey, true);
+        if (null != $err) {
+            $di->logger->error(__NAMESPACE__.DIRECTORY_SEPARATOR.__CLASS__.DIRECTORY_SEPARATOR.__FUNCTION__, ['Error' => $err]);
+
+            return false;
+        }
+
+        return true;
+    }
+
+    public function copy($srcBucket, $srcKey, $destBucket, $destKey)
+    {
+        $di = \PhalApi\DI();
+        if (!$this->doesObjectExist($srcBucket, $srcKey)) {
+            $di->logger->info(__NAMESPACE__.DIRECTORY_SEPARATOR.__CLASS__.DIRECTORY_SEPARATOR.__FUNCTION__, ['Bucket or file not exists' => $srcKey]);
+
+            return false;
+        }
+        $config = new Config();
+        $bucketManager = new BucketManager($this->auth, $config);
+        list($ret, $err) = $bucketManager->copy($srcBucket, $srcKey, $destBucket, $destKey, true);
+        if (null != $err) {
+            $di->logger->error(__NAMESPACE__.DIRECTORY_SEPARATOR.__CLASS__.DIRECTORY_SEPARATOR.__FUNCTION__, ['Error' => $err]);
+
+            return false;
+        }
+
+        return true;
+    }
+
+    public function listDomain($bucket)
+    {
+        $di = \PhalApi\DI();
+        if (!$this->doesBucketExist($bucket)) {
+            $di->logger->info(__NAMESPACE__.DIRECTORY_SEPARATOR.__CLASS__.DIRECTORY_SEPARATOR.__FUNCTION__, ['Bucket not exists' => $bucket]);
+
+            return false;
+        }
+        $config = new Config();
+        $bucketManager = new BucketManager($this->auth, $config);
+        list($ret, $err) = $bucketManager->domains($bucket);
+        if (null != $err) {
+            $di->logger->error(__NAMESPACE__.DIRECTORY_SEPARATOR.__CLASS__.DIRECTORY_SEPARATOR.__FUNCTION__, ['Error' => $err]);
+
+            return false;
+        }
+
+        return $ret;
     }
 }
