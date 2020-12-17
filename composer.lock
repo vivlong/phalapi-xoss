@@ -4,11 +4,11 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "5538625b559a13e43075d23e347bfe4c",
+    "content-hash": "9e63758f9fb65085302cf514a217143a",
     "packages": [
         {
             "name": "aliyuncs/oss-sdk-php",
-            "version": "dev-master",
+            "version": "v2.4.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/aliyun/aliyun-oss-php-sdk.git",
@@ -33,7 +33,6 @@
                 "phpunit/phpunit": "~4.0",
                 "satooshi/php-coveralls": "~1.0"
             },
-            "default-branch": true,
             "type": "library",
             "autoload": {
                 "psr-4": {
@@ -60,7 +59,7 @@
         },
         {
             "name": "qiniu/php-sdk",
-            "version": "dev-master",
+            "version": "v7.3.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/qiniu/php-sdk.git",
@@ -85,7 +84,6 @@
                 "phpunit/phpunit": "~4.0",
                 "squizlabs/php_codesniffer": "~2.3"
             },
-            "default-branch": true,
             "type": "library",
             "autoload": {
                 "psr-4": {
@@ -123,14 +121,13 @@
     ],
     "packages-dev": [],
     "aliases": [],
-    "minimum-stability": "dev",
-    "stability-flags": {
-        "aliyuncs/oss-sdk-php": 20,
-        "qiniu/php-sdk": 20
-    },
+    "minimum-stability": "stable",
+    "stability-flags": [],
     "prefer-stable": false,
     "prefer-lowest": false,
-    "platform": [],
+    "platform": {
+        "php": ">=7.0.0"
+    },
     "platform-dev": [],
     "plugin-api-version": "2.0.0"
 }

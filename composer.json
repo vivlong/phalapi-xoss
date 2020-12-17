@@ -6,7 +6,7 @@
 		"phalapi", "phalapi-xoss", "oss"
 	],
 	"license": "MulanPSL-2.0",
-	"minimum-stability": "dev",
+	"minimum-stability": "stable",
 	"homepage": "https://www.phalapi.net/",
 	"authors": [{
 		"name": "vivlong",
@@ -16,8 +16,8 @@
 	}],
 	"require": {
 		"php": ">=7.0.0",
-		"aliyuncs/oss-sdk-php": "dev-master",
-		"qiniu/php-sdk": "9999999-dev"
+		"qiniu/php-sdk": "^7.3",
+		"aliyuncs/oss-sdk-php": "^2.4"
 	},
 	"autoload": {
 		"psr-4": {
