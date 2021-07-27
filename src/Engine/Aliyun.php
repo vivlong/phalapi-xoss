@@ -8,16 +8,21 @@ use OSS\OssClient;
 class Aliyun
 {
     protected $config;
-
+    protected $debug;
     protected $client;
 
     public function __construct($config = null)
     {
         $di = \PhalApi\DI();
+        $this->debug = $di->debug;
+        $this->config = $config;
         if (is_null($this->config)) {
             $this->config = $di->config->get('app.Xoss.aliyun');
-        } else {
-            $this->config = $config;
+        }
+        if (!$this->config) {
+            $di->logger->info(__CLASS__.DIRECTORY_SEPARATOR.__FUNCTION__, 'No engine config');
+
+            return false;
         }
         $accessKeyId = $this->config['accessKeyId'];
         $accessKeySecret = $this->config['accessKeySecret'];

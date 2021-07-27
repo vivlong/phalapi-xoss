@@ -12,18 +12,18 @@ class Lite
     private $client;
 
     /**
-     * 配置参数.
-     *
-     * @var type
-     */
-    private $config;
-
-    /**
      * 获取引擎.
      *
      * @var string
      */
     private $engine;
+
+    public function __construct($engine = null, $config = null)
+    {
+        if(null != $engine) {
+            $this->set($engine, $config);
+        }
+    }
 
     public function __call($method, $arguments)
     {
@@ -40,22 +40,14 @@ class Lite
      * @param string $engine 要使用的引擎
      * @param array  $config 配置
      */
-    public function set($engine)
+    public function set($engine, $config = null)
     {
         $di = \PhalApi\DI();
         $this->engine = strtolower($engine);
-        $this->config = [];
-        $config = $di->config->get('app.Xoss.'.$this->engine);
-        if (!$config) {
-            $di->logger->log('Xoss', 'No engine config', $this->engine);
-
-            return false;
-        }
-        $this->config = array_merge($this->config, $config);
-        $engine = '\\PhalApi\\Xoss\\Engine\\'.ucfirst(strtolower($this->engine));
-        $this->client = new $engine($this->config);
+        $engine = __NAMESPACE__.'\\Engine\\'.ucfirst(strtolower($this->engine));
+        $this->client = new $engine($config);
         if (!$this->client) {
-            $di->logger->log('Xoss', 'No engine class', $engine);
+            $di->logger->info(__CLASS__.DIRECTORY_SEPARATOR.__FUNCTION__, ['No engine class' => $this->engine]);
 
             return false;
         }

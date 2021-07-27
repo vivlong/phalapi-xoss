@@ -10,15 +10,21 @@ use Qiniu\Storage\UploadManager;
 class Qiniu
 {
     protected $config;
-
+    protected $debug;
     protected $auth;
 
     public function __construct($config = null)
     {
         $di = \PhalApi\DI();
+        $this->debug = $di->debug;
         $this->config = $config;
-        if (null == $this->config) {
+        if (is_null($this->config)) {
             $this->config = $di->config->get('app.Xoss.qiniu');
+        }
+        if (!$this->config) {
+            $di->logger->info(__CLASS__.DIRECTORY_SEPARATOR.__FUNCTION__, 'No engine config');
+
+            return false;
         }
         $accessKey = $this->config['accessKey'];
         $secretKey = $this->config['secretKey'];
