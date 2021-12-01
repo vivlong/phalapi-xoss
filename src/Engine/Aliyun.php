@@ -362,4 +362,72 @@ class Aliyun
             return false;
         }
     }
+
+    public function getObject($bucket, $object)
+    {
+        $di = \PhalApi\DI();
+        if (!$this->checkObjectExist($bucket, $object)) {
+            return false;
+        }
+        try {
+            $res = $this->client->getObject($bucket, $object);
+
+            return $res;
+        } catch (OssException $e) {
+            $di->logger->error(__NAMESPACE__.DIRECTORY_SEPARATOR.__CLASS__.DIRECTORY_SEPARATOR.__FUNCTION__, ['OssException' => $e->getMessage()]);
+
+            return false;
+        }
+    }
+
+    public function getObjectMeta($bucket, $object)
+    {
+        $di = \PhalApi\DI();
+        if (!$this->checkObjectExist($bucket, $object)) {
+            return false;
+        }
+        try {
+            $res = $this->client->getObjectMeta($bucket, $object);
+
+            return $res;
+        } catch (OssException $e) {
+            $di->logger->error(__NAMESPACE__.DIRECTORY_SEPARATOR.__CLASS__.DIRECTORY_SEPARATOR.__FUNCTION__, ['OssException' => $e->getMessage()]);
+
+            return false;
+        }
+    }
+
+    public function getObjectProcess($bucket, $object, $process)
+    {
+        $di = \PhalApi\DI();
+        if (!$this->checkObjectExist($bucket, $object)) {
+            return false;
+        }
+        $options = [
+            OssClient::OSS_PROCESS => $process // "image/resize,m_fixed,h_100,w_100"
+        ];
+        try {
+            $res = $this->client->getObject($bucket, $object, $options);
+
+            return $res;
+        } catch (OssException $e) {
+            $di->logger->error(__NAMESPACE__.DIRECTORY_SEPARATOR.__CLASS__.DIRECTORY_SEPARATOR.__FUNCTION__, ['OssException' => $e->getMessage()]);
+
+            return false;
+        }
+    }
+
+    private function checkObjectExist($bucket, $object) {
+        $di = \PhalApi\DI();
+        if (!$this->client->doesBucketExist($bucket)) {
+            $di->logger->info(__NAMESPACE__.DIRECTORY_SEPARATOR.__CLASS__.DIRECTORY_SEPARATOR.__FUNCTION__, ['Bucket not exists' => $bucket]);
+
+            return false;
+        }
+        if (!$this->client->doesObjectExist($bucket, $object)) {
+            $di->logger->info(__NAMESPACE__.DIRECTORY_SEPARATOR.__CLASS__.DIRECTORY_SEPARATOR.__FUNCTION__, ['file not exists' => $object]);
+
+            return true;
+        }
+    }
 }
