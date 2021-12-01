@@ -288,7 +288,7 @@ class Qiniu
 
     private function checkBucketExist($bucket) {
         $di = \PhalApi\DI();
-        if (!$this->client->doesBucketExist($bucket)) {
+        if (!$this->doesBucketExist($bucket)) {
             $di->logger->info(__NAMESPACE__.DIRECTORY_SEPARATOR.__CLASS__.DIRECTORY_SEPARATOR.__FUNCTION__, ['Bucket not exists' => $bucket]);
 
             return false;
