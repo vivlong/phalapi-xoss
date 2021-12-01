@@ -427,7 +427,9 @@ class Aliyun
         if (!$this->client->doesObjectExist($bucket, $object)) {
             $di->logger->info(__NAMESPACE__.DIRECTORY_SEPARATOR.__CLASS__.DIRECTORY_SEPARATOR.__FUNCTION__, ['file not exists' => $object]);
 
-            return true;
+            return false;
         }
+
+        return true;
     }
 }

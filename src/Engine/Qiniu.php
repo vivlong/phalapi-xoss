@@ -268,4 +268,32 @@ class Qiniu
 
         return $ret;
     }
+
+    public function batchDelete($bucket, $objectKeys)
+    {
+        $di = \PhalApi\DI();
+        if (!$this->checkBucketExist($bucket)) return false;
+        $config = new Config();
+        $bucketManager = new BucketManager($this->auth, $config);
+        $ops = $bucketManager->buildBatchDelete($bucket, $objectKeys);
+        list($ret, $err) = $bucketManager->batch($ops);
+        if (null !== $err) {
+            $di->logger->error(__NAMESPACE__.DIRECTORY_SEPARATOR.__CLASS__.DIRECTORY_SEPARATOR.__FUNCTION__, ['Error' => $err]);
+
+            return false;
+        }
+
+        return true;
+    }
+
+    private function checkBucketExist($bucket) {
+        $di = \PhalApi\DI();
+        if (!$this->client->doesBucketExist($bucket)) {
+            $di->logger->info(__NAMESPACE__.DIRECTORY_SEPARATOR.__CLASS__.DIRECTORY_SEPARATOR.__FUNCTION__, ['Bucket not exists' => $bucket]);
+
+            return false;
+        }
+
+        return true;
+    }
 }
