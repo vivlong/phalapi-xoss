@@ -286,6 +286,23 @@ class Qiniu
         return true;
     }
 
+    public function batchMove($bucket, $keyPairs)
+    {
+        $di = \PhalApi\DI();
+        if (!$this->checkBucketExist($bucket)) return false;
+        $config = new Config();
+        $bucketManager = new BucketManager($this->auth, $config);
+        $ops = $bucketManager->buildBatchMove($bucket, $keyPairs, $bucket, true);
+        list($ret, $err) = $bucketManager->batch($ops);
+        if (null !== $err) {
+            $di->logger->error(__NAMESPACE__.DIRECTORY_SEPARATOR.__CLASS__.DIRECTORY_SEPARATOR.__FUNCTION__, ['Error' => $err]);
+
+            return false;
+        }
+
+        return true;
+    }
+
     private function checkBucketExist($bucket) {
         $di = \PhalApi\DI();
         if (!$this->doesBucketExist($bucket)) {
