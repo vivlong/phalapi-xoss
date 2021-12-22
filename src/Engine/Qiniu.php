@@ -46,6 +46,26 @@ class Qiniu
         return $this->config;
     }
 
+    public function getToken($bucket, $policy = null)
+    {
+        $di = \PhalApi\DI();
+        if (!$this->doesBucketExist($bucket)) {
+            $di->logger->info(__NAMESPACE__.DIRECTORY_SEPARATOR.__CLASS__.DIRECTORY_SEPARATOR.__FUNCTION__, ['Bucket not exists' => $bucket]);
+
+            return false;
+        }
+        try {
+            $expires = 3600;
+            $token = $this->auth->uploadToken($bucket, null, $expires, $policy, true);
+
+            return $token;
+        } catch (Exception $e) {
+            $di->logger->error(__NAMESPACE__.DIRECTORY_SEPARATOR.__CLASS__.DIRECTORY_SEPARATOR.__FUNCTION__, ['Exception' => $e->getMessage()]);
+
+            return false;
+        }
+    }
+
     private function doesBucketExist($bucket)
     {
         if (empty($bucket)) {
