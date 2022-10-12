@@ -32,8 +32,8 @@ class Aliyun
         $requestProxy = $this->config['requestProxy'];
         try {
             $ossClient = new OssClient($accessKeyId, $accessKeySecret, $endpoint, $isCName, $securityToken, $requestProxy);
-            $ossClient->setTimeout(3600); // 设置Socket层传输数据的超时时间，单位秒，默认5184000秒。
-            $ossClient->setConnectTimeout(10); // 设置建立连接的超时时间，单位秒，默认10秒。
+            $ossClient->setTimeout(3600);
+            $ossClient->setConnectTimeout(10);
             $this->client = $ossClient;
         } catch (OssException $e) {
             $di->logger->error(__NAMESPACE__.DIRECTORY_SEPARATOR.__CLASS__.DIRECTORY_SEPARATOR.__FUNCTION__, ['Exception' => $e->getMessage()]);
