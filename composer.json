@@ -1,6 +1,6 @@
 {
 	"name": "vivlong/phalapi-xoss",
-	"description": "PhalApi 2.x 扩展类库：支持Qiniu、Aliyun的OSS扩展。",
+	"description": "PhalApi 2.x 扩展类库：支持Qiniu、Aliyun、QCloud、HuaweiCloud的OSS扩展。",
 	"type": "library",
 	"keywords": [
 		"phalapi", "phalapi-xoss", "oss"
@@ -17,7 +17,9 @@
 	"require": {
 		"php": ">=7.0.0",
 		"qiniu/php-sdk": "^7.3",
-		"aliyuncs/oss-sdk-php": "^2.4"
+		"aliyuncs/oss-sdk-php": "^2.4",
+		"qcloud/cos-sdk-v5": "^2.6",
+		"obs/esdk-obs-php": "^3.22"
 	},
 	"autoload": {
 		"psr-4": {

@@ -11,14 +11,14 @@ PhalApi 2.x扩展类库，支持Qiniu、Aliyun的OSS扩展。
 安装成功后，添加以下配置到/path/to/phalapi/config/app.php文件：  
 ```php
     /**
-     * OSS相关配置
+     * XOSS相关配置
      */
     'Xoss' =>  array(
         'aliyun' => array(
             'accessKeyId'       => '<yourAccessKeyId>',
             'accessKeySecret'   => '<yourAccessKeySecret>',
             'bucket'            => '<yourBucketName>',
-            'endpoint'          => 'http://oss-cn-hangzhou.aliyuncs.com',
+            'endpoint'          => 'https://your-endpoint',
             'isCName'           => false,
             'securityToken'     => null,
             'requestProxy'      => null,
@@ -26,6 +26,17 @@ PhalApi 2.x扩展类库，支持Qiniu、Aliyun的OSS扩展。
         'qiniu' =>  array(
             'accessKey'   => '<yourAccessKey>',
             'secretKey'   => '<yourAccessSecretKey >',
+        ),
+        'qcloud' =>  array(
+            'accessKey'   => '<yourAccessKey>',
+            'secretKey'   => '<yourAccessSecretKey >',
+            'region'      => 'ap-beijing',
+            'schema'      => 'https',
+        ),
+        'huaweicloud' =>  array(
+            'accessKeyId'       => '<yourAccessKeyId>',
+            'accessKeySecret'   => '<yourSecretAccessKey>',
+            'endpoint'          => 'https://your-endpoint',
         ),
     ),
 ```
